@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tracking DO</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <h1>🚚 Tracking Delivery Order</h1>
+    <a href="index.html">← Kembali</a>
+
+    <!-- ===== FORM TAMBAH DO ===== -->
+    <div class="form-box">
+      <h3>Tambah Delivery Order Baru</h3>
+
+      <label>Nomor DO: <input :value="nomorDOBaru" readonly></label><br>
+      <label>NIM: <input v-model="formDO.nim"></label><br>
+      <label>Nama: <input v-model="formDO.nama"></label><br>
+
+      <label>Ekspedisi:
+        <select v-model="formDO.ekspedisi">
+          <option v-for="p in pengirimanList" :key="p.kode" :value="p.nama">{{ p.nama }}</option>
+        </select>
+      </label><br>
+
+      <label>Paket Bahan Ajar:
+        <select v-model="formDO.paketKode">
+          <option v-for="p in paket" :key="p.kode" :value="p.kode">{{ p.kode }} - {{ p.nama }}</option>
+        </select>
+      </label>
+
+      <!-- Detail isi paket muncul setelah pilih paket -->
+      <div v-if="paketDipilih" class="info-box">
+        <strong>Isi Paket:</strong>
+        <ul>
+          <li v-for="isi in paketDipilih.isi" :key="isi">{{ isi }}</li>
+        </ul>
+        <strong>Total Harga: Rp {{ paketDipilih.harga.toLocaleString('id-ID') }}</strong>
+      </div><br>
+
+      <label>Tanggal Kirim: <input type="date" v-model="formDO.tanggalKirim"></label><br>
+
+      <button @click="tambahDO">Buat DO</button>
+      <p v-if="errorDO" style="color:red">{{ errorDO }}</p>
+      <p v-if="suksesDO" style="color:green">{{ suksesDO }}</p>
+    </div>
+
+    <!-- ===== CARI & TAMPILKAN TRACKING ===== -->
+    <div class="form-box">
+      <h3>Cari Status DO</h3>
+      <input v-model="cariDO" placeholder="Masukkan Nomor DO (contoh: DO2025-0001)">
+      <button @click="cariTracking">Cari</button>
+
+      <div v-if="hasilTracking">
+        <h4>Status DO: {{ hasilTracking.status }}</h4>
+        <p>NIM: {{ hasilTracking.nim }} | Nama: {{ hasilTracking.nama }}</p>
+        <p>Ekspedisi: {{ hasilTracking.ekspedisi }} | Tanggal Kirim: {{ hasilTracking.tanggalKirim }}</p>
+        <p>Paket: {{ hasilTracking.paket }} | Total: Rp {{ hasilTracking.total.toLocaleString('id-ID') }}</p>
+        <ul>
+          <li v-for="p in hasilTracking.perjalanan" :key="p.waktu">
+            {{ p.waktu }} — {{ p.keterangan }}
+          </li>
+        </ul>
+      </div>
+      <p v-else-if="sudahCari" style="color:red">Nomor DO tidak ditemukan.</p>
+    </div>
+
+    <!-- ===== DAFTAR SEMUA DO ===== -->
+    <div>
+      <h3>Semua Delivery Order</h3>
+      <p v-if="Object.keys(tracking).length === 0">Belum ada data DO.</p>
+      <table v-else border="1">
+        <thead>
+          <tr><th>Nomor DO</th><th>Nama</th><th>Paket</th><th>Status</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="(val, key) in tracking" :key="key">
+            <td>{{ key }}</td>
+            <td>{{ val.nama }}</td>
+            <td>{{ val.paket }}</td>
+            <td>{{ val.status }}</td>
+            <td>Rp {{ val.total.toLocaleString('id-ID') }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="js/dataBahanAjar.js"></script>
+  <script src="js/tracking-app.js"></script>
+</body>
+</html>
