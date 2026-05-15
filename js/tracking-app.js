@@ -1,10 +1,10 @@
-var app = new Vue({
-  el: '#app',
+var trackingVue = new Vue({
+  el: '#trackingApp',
 
   data: {
-    pengirimanList: dataSitta.pengirimanList,
-    paket: dataSitta.paket,
-    tracking: JSON.parse(JSON.stringify(dataSitta.tracking)),
+    pengirimanList: app.pengirimanList,
+    paket: app.paket,
+    tracking: JSON.parse(JSON.stringify(app.tracking)),
 
     formDO: {
       nim: '',

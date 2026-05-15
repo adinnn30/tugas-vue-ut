@@ -1,10 +1,10 @@
-var app = new Vue({
-  el: '#app',
+var stokVue = new Vue({
+  el: '#stokApp',
 
   data: {
-    upbjjList: dataSitta.upbjjList,
-    kategoriList: dataSitta.kategoriList,
-    stok: JSON.parse(JSON.stringify(dataSitta.stok)),
+    upbjjList: app.upbjjList,
+    kategoriList: app.kategoriList,
+    stok: JSON.parse(JSON.stringify(app.stok)),
 
     filterUpbjj: '',
     filterKategori: '',

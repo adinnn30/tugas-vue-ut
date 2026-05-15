@@ -6,121 +6,183 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="app">
-    <h1>📦 Stok Bahan Ajar</h1>
-    <a href="index.html">← Kembali</a>
 
-    <!-- ===== FILTER ===== -->
-    <div class="filter-box">
-      <label>Filter UT-Daerah:
-        <select v-model="filterUpbjj">
-          <option value="">Semua</option>
-          <option v-for="u in upbjjList" :key="u" :value="u">{{ u }}</option>
-        </select>
-      </label>
+<div id="app" style="display:none;"></div>
 
-      <!-- Dependent: kategori hanya muncul setelah pilih upbjj -->
-      <label v-if="filterUpbjj">Filter Kategori:
-        <select v-model="filterKategori">
-          <option value="">Semua</option>
-          <option v-for="k in kategoriList" :key="k" :value="k">{{ k }}</option>
-        </select>
-      </label>
+<div id="stokApp">
+  <h1>📦 Stok Bahan Ajar</h1>
+  <a href="index.html">← Kembali</a>
 
-      <label>
-        <input type="checkbox" v-model="filterReorder"> Tampilkan yang perlu Re-order
-      </label>
+  <div class="filter-box">
+    <label>Filter UT-Daerah:
+      <select v-model="filterUpbjj">
+        <option value="">Semua</option>
+        <option v-for="u in upbjjList" :key="u" :value="u">
+          {{ u }}
+        </option>
+      </select>
+    </label>
 
-      <label>Sort:
-        <select v-model="sortBy">
-          <option value="">-</option>
-          <option value="judul">Judul</option>
-          <option value="qty">Stok</option>
-          <option value="harga">Harga</option>
-        </select>
-      </label>
+    <label v-if="filterUpbjj">Filter Kategori:
+      <select v-model="filterKategori">
+        <option value="">Semua</option>
+        <option v-for="k in kategoriList" :key="k" :value="k">
+          {{ k }}
+        </option>
+      </select>
+    </label>
 
-      <button @click="resetFilter">Reset Filter</button>
-    </div>
+    <label>
+      <input type="checkbox" v-model="filterReorder">
+      Tampilkan yang perlu Re-order
+    </label>
 
-    <!-- ===== TABEL STOK ===== -->
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Kode</th>
-          <th>Judul</th>
-          <th>Kategori</th>
-          <th>UT-Daerah</th>
-          <th>Lokasi Rak</th>
-          <th>Stok</th>
-          <th>Safety</th>
-          <th>Status</th>
-          <th>Catatan</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in stokTampil" :key="item.kode">
-          <td>{{ item.kode }}</td>
-          <td>{{ item.judul }}</td>
-          <td>{{ item.kategori }}</td>
-          <td>{{ item.upbjj }}</td>
-          <td>{{ item.lokasiRak }}</td>
-          <td>{{ item.qty }}</td>
-          <td>{{ item.safety }}</td>
+    <label>Sort:
+      <select v-model="sortBy">
+        <option value="">-</option>
+        <option value="judul">Judul</option>
+        <option value="qty">Stok</option>
+        <option value="harga">Harga</option>
+      </select>
+    </label>
 
-          <!-- Status dengan v-if / v-else-if / v-else -->
-          <td>
-            <span v-if="item.qty === 0" style="color:red">🔴 Kosong</span>
-            <span v-else-if="item.qty < item.safety" style="color:orange">⚠️ Menipis</span>
-            <span v-else style="color:green">✅ Aman</span>
-          </td>
-
-          <td v-html="item.catatanHTML"></td>
-          <td><button @click="editItem(index)">Edit</button></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- ===== FORM EDIT ===== -->
-    <div v-if="formEdit" class="form-box">
-      <h3>Edit Bahan Ajar</h3>
-      <label>Judul: <input v-model="formEdit.judul"></label><br>
-      <label>Qty: <input type="number" v-model.number="formEdit.qty"></label><br>
-      <label>Harga: <input type="number" v-model.number="formEdit.harga"></label><br>
-      <button @click="simpanEdit">Simpan</button>
-      <button @click="formEdit = null">Batal</button>
-      <p v-if="errorEdit" style="color:red">{{ errorEdit }}</p>
-    </div>
-
-    <!-- ===== FORM TAMBAH ===== -->
-    <div class="form-box">
-      <h3>Tambah Bahan Ajar Baru</h3>
-      <label>Kode: <input v-model="formBaru.kode"></label><br>
-      <label>Judul: <input v-model="formBaru.judul"></label><br>
-      <label>Kategori:
-        <select v-model="formBaru.kategori">
-          <option v-for="k in kategoriList" :key="k" :value="k">{{ k }}</option>
-        </select>
-      </label><br>
-      <label>UT-Daerah:
-        <select v-model="formBaru.upbjj">
-          <option v-for="u in upbjjList" :key="u" :value="u">{{ u }}</option>
-        </select>
-      </label><br>
-      <label>Lokasi Rak: <input v-model="formBaru.lokasiRak"></label><br>
-      <label>Harga: <input type="number" v-model.number="formBaru.harga"></label><br>
-      <label>Qty: <input type="number" v-model.number="formBaru.qty"></label><br>
-      <label>Safety: <input type="number" v-model.number="formBaru.safety"></label><br>
-      <button @click="tambahItem">Tambah</button>
-      <p v-if="errorTambah" style="color:red">{{ errorTambah }}</p>
-      <p v-if="suksesMsg" style="color:green">{{ suksesMsg }}</p>
-    </div>
-
+    <button @click="resetFilter">Reset Filter</button>
   </div>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Kode</th>
+        <th>Judul</th>
+        <th>Kategori</th>
+        <th>UT-Daerah</th>
+        <th>Lokasi Rak</th>
+        <th>Harga</th>
+        <th>Stok</th>
+        <th>Safety</th>
+        <th>Status</th>
+        <th>Catatan</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr v-for="(item, index) in stokTampil" :key="item.kode">
+        <td>{{ item.kode }}</td>
+        <td>{{ item.judul }}</td>
+        <td>{{ item.kategori }}</td>
+        <td>{{ item.upbjj }}</td>
+        <td>{{ item.lokasiRak }}</td>
+        <td>Rp {{ item.harga.toLocaleString('id-ID') }}</td>
+        <td>{{ item.qty }}</td>
+        <td>{{ item.safety }}</td>
+
+        <td>
+          <span v-if="item.qty === 0" style="color:red">🔴 Kosong</span>
+          <span v-else-if="item.qty < item.safety" style="color:orange">⚠️ Menipis</span>
+          <span v-else style="color:green">✅ Aman</span>
+        </td>
+
+        <td v-html="item.catatanHTML"></td>
+
+        <td>
+          <button @click="editItem(index)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div v-if="formEdit" class="form-box">
+    <h3>Edit Bahan Ajar</h3>
+
+    <label>Judul:
+      <input v-model="formEdit.judul">
+    </label><br>
+
+    <label>Qty:
+      <input type="number" v-model.number="formEdit.qty">
+    </label><br>
+
+    <label>Safety:
+      <input type="number" v-model.number="formEdit.safety">
+    </label><br>
+
+    <label>Harga:
+      <input type="number" v-model.number="formEdit.harga">
+    </label><br>
+
+    <button @click="simpanEdit">Simpan</button>
+    <button @click="formEdit = null">Batal</button>
+
+    <p v-if="errorEdit" style="color:red">
+      {{ errorEdit }}
+    </p>
+  </div>
+
+  <div class="form-box">
+    <h3>Tambah Bahan Ajar Baru</h3>
+
+    <label>Kode:
+      <input v-model="formBaru.kode">
+    </label><br>
+
+    <label>Judul:
+      <input v-model="formBaru.judul">
+    </label><br>
+
+    <label>Kategori:
+      <select v-model="formBaru.kategori">
+        <option value="">Pilih Kategori</option>
+        <option v-for="k in kategoriList" :key="k" :value="k">
+          {{ k }}
+        </option>
+      </select>
+    </label><br>
+
+    <label>UT-Daerah:
+      <select v-model="formBaru.upbjj">
+        <option value="">Pilih UT-Daerah</option>
+        <option v-for="u in upbjjList" :key="u" :value="u">
+          {{ u }}
+        </option>
+      </select>
+    </label><br>
+
+    <label>Lokasi Rak:
+      <input v-model="formBaru.lokasiRak">
+    </label><br>
+
+    <label>Harga:
+      <input type="number" v-model.number="formBaru.harga">
+    </label><br>
+
+    <label>Qty:
+      <input type="number" v-model.number="formBaru.qty">
+    </label><br>
+
+    <label>Safety:
+      <input type="number" v-model.number="formBaru.safety">
+    </label><br>
+
+    <label>Catatan:
+      <input v-model="formBaru.catatanHTML">
+    </label><br>
+
+    <button @click="tambahItem">Tambah</button>
+
+    <p v-if="errorTambah" style="color:red">
+      {{ errorTambah }}
+    </p>
+
+    <p v-if="suksesMsg" style="color:green">
+      {{ suksesMsg }}
+    </p>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script src="js/dataBahanAjar.js"></script>
 <script src="js/stok-app.js"></script>
+
 </body>
 </html>
